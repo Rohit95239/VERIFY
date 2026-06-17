@@ -260,19 +260,25 @@
 <script>
     /* ── Security Check ── */
     async function checkSecurity() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const source    = urlParams.get('source');
-        const referrer  = document.referrer;
-        const allowed   = source === "official" ||
-                          referrer.includes("earnlinks.io") ||
-                          referrer.includes("lootdest.org") ||
-                          referrer.includes("steps.html");
+        // localStorage use karo - cross-domain redirect ke baad bhi persist karta hai
+        const flag     = localStorage.getItem('ukm_verified');
+        const setTime  = parseInt(localStorage.getItem('ukm_verified_time') || '0');
+        const elapsed  = Date.now() - setTime;
+        const valid    = flag === '1' && elapsed < 10 * 60 * 1000; // 10 min window
+
+        const allowed  = valid ||
+                         document.referrer.includes("arolinks.com") ||
+                         document.referrer.includes("earnlinks.io") ||
+                         document.referrer.includes("lootdest.org");
+
+        // Clean URL
+        const clean = location.protocol + "//" + location.host + location.pathname;
+        history.replaceState({}, document.title, clean);
 
         if (allowed) {
-            if (source === "official") {
-                const clean = location.protocol + "//" + location.host + location.pathname;
-                history.replaceState({}, document.title, clean);
-            }
+            // Reset flag after use (one-time)
+            localStorage.removeItem('ukm_verified');
+            localStorage.removeItem('ukm_verified_time');
             document.getElementById('mainView').style.display = "flex";
             await generateLockedKey();
             startTimer();
@@ -375,117 +381,3 @@
 </script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Key Generated | Unknown Modz</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --bg: #05050a;
-            --surface: #0d0d16;
-            --surface2: #12121e;
-            --border: #1c1c2e;
-            --border2: #252538;
-            --text: #eeeef5;
-            --muted: #4a4a6a;
-            --muted2: #6b6b8a;
-            --accent: #7c6ff7;
-            --accent2: #a89cf7;
-            --green: #22d37a;
-            --red: #e05454;
-            --red-bg: #0f0404;
-            --red-bd: #2a0909;
-        }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 20px 48px;
-        }
-
-        /* ── Views ── */
-        #mainView   { display:none; flex-direction:column; align-items:center; width:100%; }
-        #bypassView { display:none; flex-direction:column; align-items:center; width:100%; }
-
-        /* ── Top badge ── */
-        .top-badge {
-            display:inline-flex; align-items:center; gap:7px;
-            background:rgba(124,111,247,0.08);
-            border:1px solid rgba(124,111,247,0.2);
-            border-radius:100px; padding:5px 14px;
-            font-size:11px; font-weight:700; letter-spacing:1.5px;
-            text-transform:uppercase; color:var(--accent2); margin-bottom:20px;
-        }
-        .badge-dot {
-            width:6px; height:6px;
-            background:var(--green); border-radius:50%;
-            animation:pulse 2s infinite;
-        }
-        .badge-dot.red { background:var(--red); }
-        @keyframes pulse {
-            0%,100% { opacity:1; transform:scale(1); }
-            50% { opacity:.5; transform:scale(.8); }
-        }
-
-        /* ── Logo ── */
-        .logo-wrap {
-            width:64px; height:64px; border-radius:18px;
-            background:var(--surface2); border:1px solid var(--border2);
-            overflow:hidden; margin:0 auto 18px;
-        }
-        .logo-wrap img { width:100%; height:100%; object-fit:cover; }
-
-        /* ── Heading ── */
-        .page-title {
-            font-size:28px; font-weight:900; letter-spacing:-0.8px;
-            text-align:center; margin-bottom:6px;
-            background:linear-gradient(135deg, #fff 0%, #a89cf7 100%);
-            -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-        }
-        .page-sub { font-size:13.5px; color:var(--muted2); text-align:center; margin-bottom:28px; }
-
-        /* ── Timer row ── */
-        .timer-row {
-            display:flex; gap:10px; margin-bottom:22px;
-            width:100%; max-width:400px;
-        }
-        .timer-block {
-            flex:1; background:var(--surface);
-            border:1px solid var(--border);
-            border-radius:14px; padding:14px 8px; text-align:center;
-            position:relative; overflow:hidden;
-        }
-        .timer-block::before {
-            content:''; position:absolute; top:0; left:0; right:0; height:2px;
-            background:linear-gradient(90deg, var(--accent), var(--green));
-        }
-        .timer-val {
-            font-family:'JetBrains Mono', monospace;
-            font-size:22px; font-weight:700;
-            color:var(--text); display:block; margin-bottom:2px;
-            transition:color .3s;
-        }
-        .timer-val.urgent { color:#e8654a; }
-        .timer-lbl { font-size:10px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:1px; }
-        .timer-caption {
-            font-size:11px; color:var(--muted); text-align:center;
-            margin-bottom:22px; margin-top:-8px;
-        }
-        .timer-caption span { color:var(--accent2); font-weight:600; }
-
-        /* ── Card ── */
-        .card {
-            width:100%; max-width:400px;
-            background:var(--surface); border:1px solid var(--border);
-            border-radius:22px; padding:
