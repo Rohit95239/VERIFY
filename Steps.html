@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Access | Unknown Modz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #05050a;
+            --surface: #0d0d16;
+            --surface2: #12121e;
+            --border: #1c1c2e;
+            --border2: #252538;
+            --text: #eeeef5;
+            --muted: #4a4a6a;
+            --muted2: #6b6b8a;
+            --accent: #7c6ff7;
+            --accent2: #a89cf7;
+            --green: #22d37a;
+            --warn: #f0b429;
+            --warn-bg: #0f0c02;
+            --warn-bd: #2a2005;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px 48px;
+        }
+        .top-badge {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: rgba(124,111,247,0.08);
+            border: 1px solid rgba(124,111,247,0.2);
+            border-radius: 100px; padding: 5px 14px;
+            font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; color: var(--accent2); margin-bottom: 20px;
+        }
+        .badge-dot {
+            width: 6px; height: 6px;
+            background: var(--green); border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { opacity:1; transform:scale(1); }
+            50% { opacity:.5; transform:scale(.8); }
+        }
+        .logo-wrap {
+            width: 64px; height: 64px; border-radius: 18px;
+            background: var(--surface2); border: 1px solid var(--border2);
+            overflow: hidden; margin: 0 auto 18px;
+        }
+        .logo-wrap img { width:100%; height:100%; object-fit:cover; }
+        .page-title {
+            font-size: 28px; font-weight: 900; letter-spacing: -0.8px;
+            text-align: center; margin-bottom: 6px;
+            background: linear-gradient(135deg, #fff 0%, #a89cf7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .page-sub { font-size: 13.5px; color: var(--muted2); text-align: center; margin-bottom: 28px; }
+        .stats-row { display:flex; gap:10px; margin-bottom:22px; width:100%; max-width:400px; }
+        .stat {
+            flex:1; background:var(--surface);
+            border:1px solid var(--border);
+            border-radius:14px; padding:14px 12px; text-align:center;
+        }
+        .stat-val { font-size:16px; font-weight:800; display:block; margin-bottom:2px; }
+        .stat-lbl { font-size:10px; color:var(--muted); font-weight:500; text-transform:uppercase; letter-spacing:1px; }
+        .progress { display:flex; align-items:center; width:100%; max-width:400px; margin-bottom:18px; }
+        .step-node { display:flex; align-items:center; gap:8px; }
+        .node-circle {
+            width:30px; height:30px; border-radius:50%;
+            border:1.5px solid var(--border2);
+            display:flex; align-items:center; justify-content:center;
+            font-size:11px; font-weight:700; color:var(--muted); flex-shrink:0;
+        }
+        .node-circle.active { border-color:var(--accent); background:rgba(124,111,247,0.12); color:var(--accent2); }
+        .node-label { font-size:12px; font-weight:600; color:var(--muted); }
+        .node-label.active { color:var(--text); }
+        .progress-line { flex:1; height:1px; background:var(--border); margin:0 14px; }
+        .card {
+            width:100%; max-width:400px;
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:22px; padding:28px 24px;
+            position:relative; overflow:hidden;
+        }
+        .card::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:1px;
+            background:linear-gradient(90deg, transparent, rgba(124,111,247,0.4), transparent);
+        }
+        .step-eyebrow {
+            font-size:10px; font-weight:700; letter-spacing:2.5px;
+            text-transform:uppercase; color:var(--accent); margin-bottom:8px;
+            display:flex; align-items:center; gap:8px;
+        }
+        .step-eyebrow::after { content:''; flex:1; height:1px; background:var(--border2); }
+        .card-title { font-size:20px; font-weight:800; letter-spacing:-.4px; margin-bottom:10px; }
+        .card-desc { font-size:13.5px; color:var(--muted2); line-height:1.7; margin-bottom:22px; }
+        .warning {
+            background:var(--warn-bg); border:1px solid var(--warn-bd);
+            border-radius:12px; padding:14px 16px; margin-bottom:22px;
+            display:grid; grid-template-columns:3px 1fr; gap:12px;
+        }
+        .warn-line { background:var(--warn); border-radius:2px; }
+        .warn-head { font-size:12px; font-weight:700; color:var(--warn); margin-bottom:4px; }
+        .warn-body { font-size:12px; color:#7a6018; line-height:1.5; }
+
+        /* ── Button states ── */
+        .btn {
+            display:flex; align-items:center; justify-content:center; gap:8px;
+            width:100%; padding:16px;
+            background:var(--accent); color:#fff;
+            font-size:14px; font-weight:800; letter-spacing:.3px;
+            border:none; border-radius:12px; cursor:pointer;
+            transition:all .25s; text-decoration:none;
+            box-shadow:0 8px 24px rgba(124,111,247,0.25);
+            position:relative; overflow:hidden;
+        }
+        .btn:hover:not(:disabled) { background:var(--accent2); transform:translateY(-2px); box-shadow:0 12px 32px rgba(124,111,247,0.35); }
+        .btn:active:not(:disabled) { transform:translateY(0); }
+        .btn:disabled { opacity:.6; cursor:not-allowed; }
+        .btn-arrow { font-size:16px; transition:transform .25s; }
+        .btn:hover .btn-arrow { transform:translateX(4px); }
+
+        /* Loading spinner inside button */
+        .spinner {
+            width:16px; height:16px;
+            border:2px solid rgba(255,255,255,0.3);
+            border-top-color:#fff;
+            border-radius:50%;
+            animation:spin .7s linear infinite;
+            display:none;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* Short link display box */
+        .link-box {
+            display:none;
+            background:#000;
+            border:1px solid var(--border2);
+            border-radius:12px;
+            padding:14px 16px;
+            margin-top:14px;
+            align-items:center;
+            gap:10px;
+        }
+        .link-box.show { display:flex; }
+        .link-text {
+            font-family:'JetBrains Mono', monospace;
+            font-size:13px; color:var(--accent2);
+            flex:1; word-break:break-all;
+        }
+        .link-copy {
+            background:var(--border2); border:none;
+            color:var(--text); font-size:11px; font-weight:700;
+            padding:6px 12px; border-radius:8px; cursor:pointer;
+            white-space:nowrap; transition:background .2s;
+            letter-spacing:.5px;
+        }
+        .link-copy:hover { background:var(--accent); }
+
+        .error-msg {
+            font-size:12px; color:#e05454;
+            text-align:center; margin-top:12px;
+            display:none;
+        }
+        .error-msg.show { display:block; }
+
+        .footer { margin-top:36px; font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:#1a1a2e; text-align:center; }
+    </style>
+</head>
+<body>
+
+    <div class="top-badge"><span class="badge-dot"></span>Secure Access System</div>
+    <div class="logo-wrap"><img src="./assets/logo.png" alt="UKM Logo"></div>
+    <p class="page-title">Get a Free Key</p>
+    <p class="page-sub">Complete the verification step to receive your license key.</p>
+
+    <div class="stats-row">
+        <div class="stat"><span class="stat-val">24h</span><span class="stat-lbl">Key Valid</span></div>
+        <div class="stat"><span class="stat-val">1 Step</span><span class="stat-lbl">To Complete</span></div>
+        <div class="stat"><span class="stat-val">Free</span><span class="stat-lbl">No Cost</span></div>
+    </div>
+
+    <div class="progress">
+        <div class="step-node"><div class="node-circle active">1</div><span class="node-label active">Verify</span></div>
+        <div class="progress-line"></div>
+        <div class="step-node"><div class="node-circle">2</div><span class="node-label">Get Key</span></div>
+    </div>
+
+    <div class="card">
+        <p class="step-eyebrow">Step 1 of 1</p>
+        <p class="card-title">Identity Verification</p>
+        <p class="card-desc">Click below to complete a quick verification. You will be redirected briefly, then returned here to collect your device-locked key.</p>
+
+        <div class="warning">
+            <div class="warn-line"></div>
+            <div>
+                <p class="warn-head">Security Notice</p>
+                <p class="warn-body">Using bots or any automation tools will result in a permanent key ban on your device.</p>
+            </div>
+        </div>
+
+        <button class="btn" id="mainBtn" onclick="generateAndRedirect()">
+            <span class="spinner" id="spinner"></span>
+            <span id="btnText">Continue to Verification</span>
+            <span class="btn-arrow" id="btnArrow">&#8594;</span>
+        </button>
+
+        <div class="link-box" id="linkBox">
+            <span class="link-text" id="shortLinkText"></span>
+            <button class="link-copy" id="linkCopyBtn" onclick="copyShortLink()">COPY</button>
+        </div>
+
+        <p class="error-msg" id="errorMsg">Could not generate link. Please try again.</p>
+    </div>
+
+    <p class="footer">LITTLEMODAPK ☑️ &mdash; Security System</p>
+
+<script>
+    const API_TOKEN   = "90f2dbd00070729964ec45a3a9186917388568f7";
+    // Destination: key page with official source flag
+    const DESTINATION = "https://yourusername.github.io/ukm-key/key.html?source=official";
+    // Custom alias (optional) — leave empty string "" for random
+    const ALIAS       = "ukm-verify";
+
+    let generatedLink = "";
+
+    async function generateAndRedirect() {
+        const btn     = document.getElementById('mainBtn');
+        const spinner = document.getElementById('spinner');
+        const btnText = document.getElementById('btnText');
+        const btnArrow= document.getElementById('btnArrow');
+        const errMsg  = document.getElementById('errorMsg');
+        const linkBox = document.getElementById('linkBox');
+
+        // If already generated, just open it
+        if (generatedLink) {
+            window.location.href = generatedLink;
+            return;
+        }
+
+        // Loading state
+        btn.disabled      = true;
+        spinner.style.display = "block";
+        btnText.innerText = "Generating Link...";
+        btnArrow.style.display = "none";
+        errMsg.classList.remove('show');
+        linkBox.classList.remove('show');
+
+        try {
+            const encodedUrl = encodeURIComponent(DESTINATION);
+            const aliasParam = ALIAS ? `&alias=${ALIAS}` : "";
+            const apiUrl     = `https://arolinks.com/api?api=${API_TOKEN}&url=${encodedUrl}${aliasParam}&format=text`;
+
+            // CORS proxy needed for client-side fetch
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+            const response = await fetch(proxyUrl);
+            const text     = await response.text();
+            const short    = text.trim();
+
+            if (short && short.startsWith("http")) {
+                generatedLink = short;
+
+                // Show link box
+                document.getElementById('shortLinkText').innerText = short;
+                linkBox.classList.add('show');
+
+                // Update button to "Open"
+                btn.disabled          = false;
+                spinner.style.display = "none";
+                btnText.innerText     = "Open Verification Link";
+                btnArrow.style.display= "inline";
+
+                // Auto-redirect after 1.5s
+                setTimeout(() => { window.location.href = short; }, 1500);
+
+            } else {
+                throw new Error("Invalid response");
+            }
+        } catch (e) {
+            // Fallback: go directly to destination
+            btn.disabled          = false;
+            spinner.style.display = "none";
+            btnText.innerText     = "Continue to Verification";
+            btnArrow.style.display= "inline";
+            errMsg.innerText      = "Short link failed. Redirecting directly...";
+            errMsg.classList.add('show');
+            setTimeout(() => { window.location.href = DESTINATION; }, 1500);
+        }
+    }
+
+    function copyShortLink() {
+        if (!generatedLink) return;
+        navigator.clipboard.writeText(generatedLink).then(() => {
+            const btn = document.getElementById('linkCopyBtn');
+            btn.innerText = "COPIED";
+            setTimeout(() => btn.innerText = "COPY", 1500);
+        });
+    }
+</script>
+</body>
+  </html>
+                            
