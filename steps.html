@@ -226,86 +226,22 @@
     <p class="footer">Unknown Modz &mdash; Security System</p>
 
 <script>
-    const API_TOKEN   = "90f2dbd00070729964ec45a3a9186917388568f7";
-    // Destination: key page with official source flag
-    const DESTINATION = "https://rohit95239.github.io/VERIFY/index.html?source=official";
-    // Custom alias (optional) — leave empty string "" for random
-    const ALIAS       = "ukm-verify";
+    // ── Yahan apna AroLinks short link daalo ──
+    // Ek baar browser mein yeh URL kholo aur jo link mile woh SHORT_LINK mein daalo:
+    // https://arolinks.com/api?api=90f2dbd00070729964ec45a3a9186917388568f7&url=https%3A%2F%2Frohit95239.github.io%2FVERIFY%2Findex.html&alias=ukm-key&format=text
+    const SHORT_LINK = "https://arolinks.com/ukm-key"; // e.g. https://arolinks.com/ukm-key
 
-    let generatedLink = "";
-
-    async function generateAndRedirect() {
-        const btn     = document.getElementById('mainBtn');
-        const spinner = document.getElementById('spinner');
-        const btnText = document.getElementById('btnText');
-        const btnArrow= document.getElementById('btnArrow');
-        const errMsg  = document.getElementById('errorMsg');
-        const linkBox = document.getElementById('linkBox');
-
-        // If already generated, just open it
-        if (generatedLink) {
-            window.location.href = generatedLink;
-            return;
-        }
-
-        // Loading state
-        btn.disabled      = true;
-        spinner.style.display = "block";
-        btnText.innerText = "Generating Link...";
-        btnArrow.style.display = "none";
-        errMsg.classList.remove('show');
-        linkBox.classList.remove('show');
-
-        try {
-            const encodedUrl = encodeURIComponent(DESTINATION);
-            const aliasParam = ALIAS ? `&alias=${ALIAS}` : "";
-            const apiUrl     = `https://arolinks.com/api?api=${API_TOKEN}&url=${encodedUrl}${aliasParam}&format=text`;
-
-            // CORS proxy needed for client-side fetch
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-            const response = await fetch(proxyUrl);
-            const text     = await response.text();
-            const short    = text.trim();
-
-            if (short && short.startsWith("http")) {
-                generatedLink = short;
-
-                // Show link box
-                document.getElementById('shortLinkText').innerText = short;
-                linkBox.classList.add('show');
-
-                // Update button to "Open"
-                btn.disabled          = false;
-                spinner.style.display = "none";
-                btnText.innerText     = "Open Verification Link";
-                btnArrow.style.display= "inline";
-
-                // Auto-redirect after 1.5s
-                setTimeout(() => { window.location.href = short; }, 1500);
-
-            } else {
-                throw new Error("Invalid response");
-            }
-        } catch (e) {
-            // Fallback: go directly to destination
-            btn.disabled          = false;
-            spinner.style.display = "none";
-            btnText.innerText     = "Continue to Verification";
-            btnArrow.style.display= "inline";
-            errMsg.innerText      = "Short link failed. Redirecting directly...";
-            errMsg.classList.add('show');
-            setTimeout(() => { window.location.href = DESTINATION; }, 1500);
-        }
+    function generateAndRedirect() {
+        localStorage.setItem('ukm_verified', '1');
+        localStorage.setItem('ukm_verified_time', Date.now());
+        window.location.href = SHORT_LINK;
     }
 
     function copyShortLink() {
-        if (!generatedLink) return;
-        navigator.clipboard.writeText(generatedLink).then(() => {
+        navigator.clipboard.writeText(SHORT_LINK).then(() => {
             const btn = document.getElementById('linkCopyBtn');
             btn.innerText = "COPIED";
             setTimeout(() => btn.innerText = "COPY", 1500);
         });
     }
 </script>
-</body>
-</html>
